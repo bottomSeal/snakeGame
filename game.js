@@ -36,11 +36,11 @@ window.onload = () => {
     board.addEventListener('click', () => {
         gameOver = false;
         score = 0;
-    })
+    });
 
     foodPlace();
 
-    setInterval(update, 1000/10);
+    setInterval(update, 1000 / 10)
 }
 
 function update() {
@@ -61,11 +61,14 @@ function update() {
         return
     }
 
+    // Write score
     createText(`Score: ${score}`, 30, 40);
 
-    createRect(foodX, foodY, blockSize, blockSize, 'red');
+    // Create first food
+    createRect(foodX, foodY, blockSize, blockSize, "lime");
 
-    if(snakeX == foodX && snakeY == foodY){
+    // Did it eat
+    if (snakeX == foodX && snakeY == foodY) {
         tail.push([foodX, foodY]);
 
         score += 10;
@@ -75,57 +78,60 @@ function update() {
         foodPlace()
     }
 
-    for (let i = tail.length; i > 0; i--) {
+    // Snake tail
+    for (let i = tail.length - 1; i > 0; i--) {
         tail[i] = tail[i - 1];
     }
 
-    if(tail.length){
+    if (tail.length) {
         tail[0] = [snakeX, snakeY];
     }
 
+    // Snake position
     snakeX += velocityX * blockSize;
     snakeY += velocityY * blockSize;
 
-    createRect(snakeX, snakeY, blockSize, blockSize,'orange');
+    createRect(snakeX, snakeY, blockSize, blockSize, 'orange');
 
     for (let i = 0; i < tail.length; i++) {
         createRect(tail[i][0], tail[i][1], blockSize, blockSize, 'lime');
     }
 
-    if(snakeX < 0 || snakeX > cols * blockSize || snakeY < 0 || snakeY > rows * blockSize){
+    // Hit the wall
+    if (snakeX < 0 || snakeX > cols * blockSize || snakeY < 0 || snakeY > rows * blockSize) {
         gameOverEvent()
     }
 
+    // Shot herself
     for (let i = 0; i < tail.length; i++) {
-        if(snakeX == tail[i][0] && snakeY == tail[i][1]){
+        if (snakeX == tail[i][0] && snakeY == tail[i][1]) {
             gameOverEvent()
         }
     }
-
 }
 
-function foodPlace(){
+function foodPlace() {
     foodX = Math.floor(Math.random() * cols) * blockSize;
     foodY = Math.floor(Math.random() * rows) * blockSize;
 }
 
-function changeDirection(e){
-    if(e.code == "ArrowUp"){
+function changeDirection(e) {
+    if (e.code == "ArrowUp") {
         velocityX = 0;
         velocityY = -1;
-    }else if(e.code == "ArrowDown"){
+    } else if (e.code == "ArrowDown") {
         velocityX = 0;
         velocityY = 1;
-    }else if(e.code == "ArrowLeft"){
+    } else if (e.code == "ArrowLeft") {
         velocityX = -1;
         velocityY = 0;
-    }else if(e.code == "ArrowRight"){
+    } else if (e.code == "ArrowRight") {
         velocityX = 1;
         velocityY = 0;
     }
 }
 
-function gameOverEvent(){
+function gameOverEvent() {
     gameOver = true;
     gameOverAudio.play();
     tail = [];
@@ -135,13 +141,14 @@ function gameOverEvent(){
     velocityY = 0;
 }
 
-function createRect(x, y, width, height, color = "black"){
+function createRect(x, y, width, height, color = "black") {
     context.fillStyle = color;
     context.fillRect(x, y, width, height);
 }
 
-function createText(text, x, y, textAlign = "start", fontSize = 20){
+function createText(text, x, y, textAlign = "start", fontSize = 20 ) {
     context.fillStyle = "lime";
-    context.font = `${fontSize}px Roboto Thin`;
-    context.fillText(text, x, y);
+    context.font = `${fontSize}px Roboto Mono`;
+    context.textAlign = textAlign;
+    context.fillText(text, x, y)
 }
